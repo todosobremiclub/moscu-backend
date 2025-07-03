@@ -24,7 +24,20 @@
   </style>
 </head>
 <body>
-  <header><h1>Gestión de Alumnos - Teatro Moscú</h1></header>
+  <script>
+    const token = localStorage.getItem('token');
+    if (token !== 'moscu-token') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <header style="display: flex; justify-content: space-between; align-items: center;">
+  <h1>Gestión de Alumnos - Teatro Moscú</h1>
+  <button onclick="cerrarSesion()" style="background-color: white; color: #8b0000; border: none; padding: 0.5rem 1rem; cursor: pointer; font-weight: bold;">
+    Cerrar sesión
+  </button>
+</header>
+
   <main>
     <div class="toolbar">
       <input type="text" id="busqueda" placeholder="Buscar por nombre, apellido o DNI" />
@@ -131,6 +144,12 @@
 
   document.getElementById("ver_inactivos").addEventListener("change", cargarAlumnos);
   window.addEventListener("load", cargarAlumnos);
+
+function cerrarSesion() {
+  localStorage.removeItem('token');
+  window.location.href = 'login.html';
+}
+
 </script>
 </body>
 </html>
