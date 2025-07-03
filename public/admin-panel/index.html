@@ -86,6 +86,37 @@
     .modal-content button {
       margin-top: 1rem;
     }
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar input, .toolbar select {
+    width: 100%;
+  }
+
+  .boton-nuevo {
+    width: 100%;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
   </style>
 </head>
 <body>
@@ -96,25 +127,30 @@
     }
   </script>
 
-  <header>
-    <h1>Gestión de Alumnos - Teatro Moscú</h1>
-    <button onclick="cerrarSesion()" style="background-color: white; color: #8b0000; border: none; padding: 0.5rem 1rem; cursor: pointer; font-weight: bold;">
-      Cerrar sesión
-    </button>
-  </header>
+ <header style="background-color: #8b0000; color: white; padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+  <div style="display: flex; align-items: center;">
+    <img src="logo_moscu.png" alt="Logo Moscú" style="height: 50px; margin-right: 1rem;">
+    <h1 style="margin: 0; font-size: 1.5rem;">Gestión de Alumnos - Teatro Moscú</h1>
+  </div>
+  <button onclick="cerrarSesion()" style="background-color: white; color: #8b0000; border: none; padding: 0.5rem 1rem; cursor: pointer; font-weight: bold;">
+    Cerrar sesión
+  </button>
+</header>
+
 
   <main>
-    <div class="toolbar">
-      <input type="text" id="busqueda" placeholder="Buscar por nombre, apellido o DNI" />
-      <select id="orden">
-        <option value="apellido">Ordenar por apellido</option>
-        <option value="numero_alumno">Ordenar por número</option>
-        <option value="dni">Ordenar por DNI</option>
-      </select>
-      <label><input type="checkbox" id="ver_inactivos" /> Ver inactivos</label>
-      <button class="boton-nuevo" onclick="abrirModal()">Nuevo alumno</button>
-    </div>
+  <div class="toolbar">
+    <input type="text" id="busqueda" placeholder="Buscar por nombre, apellido o DNI" />
+    <select id="orden">
+      <option value="apellido">Ordenar por apellido</option>
+      <option value="numero_alumno">Ordenar por número</option>
+      <option value="dni">Ordenar por DNI</option>
+    </select>
+    <label><input type="checkbox" id="ver_inactivos" /> Ver inactivos</label>
+    <button class="boton-nuevo" onclick="abrirModal()">Nuevo alumno</button>
+  </div>
 
+  <div class="table-container">
     <table id="tabla-alumnos">
       <thead>
         <tr>
@@ -124,7 +160,9 @@
       </thead>
       <tbody></tbody>
     </table>
-  </main>
+  </div>
+</main>
+
 
   <div class="modal" id="modal">
     <div class="modal-content">
@@ -202,8 +240,9 @@
           const fila = document.createElement("tr");
           fila.innerHTML = `
             <td>${a.numero_alumno}</td><td>${a.nombre}</td><td>${a.apellido}</td><td>${a.dni}</td>
-            <td>${a.clase}</td><td>${a.telefono}</td><td>${a.fecha_nacimiento || ""}</td>
-            <td>${a.fecha_ingreso || ""}</td><td>${a.activo ? "✅" : "❌"}</td>
+            <td>${a.clase}</td><td>${a.telefono}</td><td>${formatearFecha(a.fecha_nacimiento)}</td>
+<td>${formatearFecha(a.fecha_ingreso)}</td>
+<td>${a.activo ? "✅" : "❌"}</td>
             <td>${a.foto_url ? '<img src="' + a.foto_url + '" width="40">' : ''}</td>
             <td><button onclick="editar(${a.id})">✏️</button><button onclick="eliminar(${a.id})">🗑️</button></td>
           `;
@@ -229,6 +268,19 @@
 
     document.getElementById("ver_inactivos").addEventListener("change", cargarAlumnos);
     window.addEventListener("load", cargarAlumnos);
+
+function formatearFecha(fechaISO) {
+  if (!fechaISO) return "";
+  const fecha = new Date(fechaISO);
+  // Ajustar a GMT-3 explícitamente usando Intl y zona horaria
+  return fecha.toLocaleDateString('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
   </script>
 </body>
 </html>
